@@ -24,7 +24,6 @@ function _init()
 
     -- 
     load_mesh()
-    load_mesh()
 end
 
 
@@ -58,9 +57,9 @@ function _update()
     for m=1, #meshes do
         cur_mesh = meshes[m]
 
-        cur_mesh.rotation.x += 0.01 / m
-        cur_mesh.rotation.y += 0.01 / m
-        cur_mesh.rotation.z += 0.01 / m
+        cur_mesh.rotation.x += 0.01
+        cur_mesh.rotation.y += 0.01
+        cur_mesh.rotation.z += 0.01
 
         for f=1, #cur_mesh.faces do
             cur_face = cur_mesh.faces[f]         
