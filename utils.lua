@@ -13,8 +13,9 @@ function dump(o)
 end
 
 function print_sys_info()
-   print("memory:"..stat(0).." kb")
+   print("fps:"..stat(7).."fps")
    print("cpu:"..(stat(1)*100).."%")
+   print("memory:"..stat(0).." kb")
 end
 
 function print_mesh_info()

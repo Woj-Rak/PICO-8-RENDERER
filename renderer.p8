@@ -9,6 +9,7 @@ __lua__
 #include mesh.lua
 
 --TODO:
+-- add backface culling
 -- define some direction vectors
 -- fix z-buffer functionality
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)
