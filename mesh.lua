@@ -3,14 +3,13 @@ meshes = {}
 
 -- mesh object definition
 function mesh()
-    mesh = {
+    return {
         vertices = {},
         faces = {},
         rotation = vec(0, 0, 0),
         scale = vec(1, 1, 1),
         translation = vec(0, 0, 0)
     }
-    return mesh
 end
 
 -- hardcoded cube mesh for debugging
@@ -22,7 +21,7 @@ cube_vertices = {
 	{ x =  1, y =  1, z =  1 }, 
 	{ x =  1, y = -1, z =  1 }, 
 	{ x = -1, y =  1, z =  1 }, 
-	{ x = -1, y = -1, z =  1 }, 
+	{ x = -1, y = -1, z =  1 }
 }
 
 cube_faces = {
@@ -48,7 +47,7 @@ cube_faces = {
 
 -- function to load mesh data into a mesh object
 function load_mesh()
-    mesh = mesh()
+    local mesh = mesh()
 
     -- TODO: replace with actual mesh loading
     mesh.vertices = cube_vertices

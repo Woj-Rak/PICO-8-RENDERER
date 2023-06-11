@@ -1,5 +1,13 @@
 z_buffer = {}
 
+-- drawing modes
+-- 1 = vertices + wireframe
+-- 2 = wireframe
+-- 3 = solid color
+-- 4 = solid color + wireframe 
+drawing_mode = 1
+max_draw_mode = 4
+
 function clear_z_buffer()
     for x=0, 127 do
         z_buffer[x] = {}

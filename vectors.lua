@@ -46,3 +46,6 @@ function vec_normalize(v)
     v.z /= length
 end
 
+function v_rot_x(v,a) return vec(v.x, v.y * cos(a) - v.z * sin(a), v.y * sin(a) + v.z * cos(a)) end
+function v_rot_y(v,a) return vec(v.x * cos(a) - v.z * sin(a), v.y, v.x * sin(a) + v.z * cos(a)) end
+function v_rot_z(v,a) return vec(v.x * cos(a) - v.y * sin(a), v.x * sin(a) + v.y * cos(a), v.z) end
