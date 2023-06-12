@@ -1,4 +1,5 @@
 z_buffer = {}
+backface_culling = true
 
 -- drawing modes
 -- 1 = vertices + wireframe

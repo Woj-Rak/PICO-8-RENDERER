@@ -27,4 +27,5 @@ function print_mesh_info()
 
    print("tris:"..#triangles_to_render)
    print("verts:"..vert_count)
+   print("backface cull:"..(backface_culling and 'true' or 'false'), 0, 123)
 end
