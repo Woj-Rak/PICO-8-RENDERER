@@ -46,7 +46,7 @@ cube_faces = {
 }
 
 -- function to load mesh data into a mesh object
-function load_mesh()
+function load_cube_mesh()
     local mesh = mesh()
 
     -- TODO: replace with actual mesh loading
