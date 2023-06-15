@@ -41,6 +41,9 @@ end
 
 function vec_normalize(v)
     local length = vec_len(v)
+
+    if length == 0 then return v end
+
     v.x /= length
     v.y /= length
     v.z /= length
@@ -51,8 +54,3 @@ v_up = vec(0, 1, 0)
 v_down = vec(0, -1, 0)
 v_left = vec(-1, 0, 0)
 v_right = vec(1, 0, 0)
-
--- replace with matrices
-function v_rot_x(v,a) return vec(v.x, v.y * cos(a) - v.z * sin(a), v.y * sin(a) + v.z * cos(a)) end
-function v_rot_y(v,a) return vec(v.x * cos(a) - v.z * sin(a), v.y, v.x * sin(a) + v.z * cos(a)) end
-function v_rot_z(v,a) return vec(v.x * cos(a) - v.y * sin(a), v.x * sin(a) + v.y * cos(a), v.z) end

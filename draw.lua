@@ -1,13 +1,15 @@
 z_buffer = {}
-backface_culling = true
+backface_culling = false
 
 -- drawing modes
 -- 1 = vertices + wireframe
 -- 2 = wireframe
 -- 3 = solid color
 -- 4 = solid color + wireframe 
+-- 5 = vertices only
+
 drawing_mode = 1
-max_draw_mode = 4
+max_draw_mode = 5 
 
 function clear_z_buffer()
     for x=0, 127 do
