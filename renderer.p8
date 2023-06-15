@@ -21,6 +21,7 @@ __lua__
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)
     -- + try scan line with rectfill?
     -- + remove the zbuffer stuff :(
+-- optimize the useage of matrices for better performance
 -- texture loading
 
 debug = false
@@ -31,9 +32,7 @@ function _init()
     clear_z_buffer()
 
     cam = camera()
-    -- TODO: this shouldn't have to be the case
-    -- having a 1 in the .z is vital to having anything shop up on the screen
-    cam.position = vec(0, 0, 1)
+    cam.position = vec(0, 0, -1)
 
     -- projection matrix
     fov = 120
@@ -80,18 +79,12 @@ function _update()
     for m=1, #meshes do
         cur_mesh = meshes[m]
 
-        --cur_mesh.rotation.x += 0.01
-        --cur_mesh.rotation.y += 0.1
-        --cur_mesh.rotation.z += 0.5
+        cur_mesh.rotation.x += 0.01
+        cur_mesh.rotation.y += 0.01
+        cur_mesh.rotation.z += 0.01
 
         -- initial offset for the camera
-        cur_mesh.translation.x += 0.01
-        cur_mesh.translation.y += 0.01 
-        cur_mesh.translation.z += 0.01 
-
-        --cam.position.x += 1 
-        --cam.position.y += 1
-        --cam.position.z += 1
+        cur_mesh.translation.z = 5
 
         -- view matrix
         local target = cam_lookat_target(cam)
@@ -122,10 +115,10 @@ function _update()
 
                 -- world matrix
                 world_matrix = mat_identity() 
-                --world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
+                world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
                 world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
                 world_matrix = mat4_mul_mat4(translation_matrix, world_matrix)
 
                 -- multiple world matrix by the original vector
@@ -133,9 +126,6 @@ function _update()
 
                 -- transform to camera space
                 transformed_vertex = mat4_mul_vec(view_matrix, transformed_vertex)
-
-                -- TODO: shouldn't need this
-                transformed_vertex.z -= 5
 
                 add(transformed_vertices, transformed_vertex)
             end
@@ -179,7 +169,7 @@ function _update()
 
                     projected_triangle[i] = projected_point
                 end
-                    
+
                 add(triangles_to_render, projected_triangle)
             end
         end

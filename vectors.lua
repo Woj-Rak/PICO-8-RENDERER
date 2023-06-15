@@ -1,6 +1,6 @@
 -- every vector will be a vec4
 function vec(x, y, z, w)
-    return {x=x or 0, y=y or 0, z=z or 0, w=w or 0}
+    return {x=x or 0, y=y or 0, z=z or 0, w=w or 1}
 end
 
 function vec_copy(v)

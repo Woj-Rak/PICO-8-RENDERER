@@ -1,5 +1,5 @@
 z_buffer = {}
-backface_culling = false
+backface_culling = true
 
 -- drawing modes
 -- 1 = vertices + wireframe
@@ -56,13 +56,13 @@ function draw_triangle_pixel(x, y, c, point_a, point_b, point_c)
     interpolated_reciprocal_w = 1 - interpolated_reciprocal_w
 
     -- take the z buffer into consideration when drawing the pixel
-    if (interpolated_reciprocal_w < z_buffer[x][y]) then
+    --if (interpolated_reciprocal_w < z_buffer[x][y]) then
         -- draw the pixel
         pset(x, y, c)
 
         -- update the z_buffer for the updated pixel
-        z_buffer[x][y] = interpolated_reciprocal_w
-    end
+        --z_buffer[x][y] = interpolated_reciprocal_w
+    --end
 end
 
 function draw_triangle_filled(x0, y0, z0, w0, x1, y1, z1, w1, x2, y2, z2, w2, c)
