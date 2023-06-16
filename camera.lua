@@ -5,7 +5,7 @@ function camera()
         velocity = vec(),
         yaw = 0,
         pitch = 0,
-        move_speed = 0.01,
+        move_speed = 0.1,
         scroll_speed = 0.1
     }
 end
