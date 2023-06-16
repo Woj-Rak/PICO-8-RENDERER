@@ -1,4 +1,3 @@
-z_buffer = {}
 backface_culling = true
 
 -- drawing modes
@@ -11,14 +10,6 @@ backface_culling = true
 drawing_mode = 1
 max_draw_mode = 5 
 
-function clear_z_buffer()
-    for x=0, 127 do
-        z_buffer[x] = {}
-        for y=0, 127 do 
-            z_buffer[x][y] = 0
-        end
-    end
-end
 
 function draw_triangle(x0, y0, x1, y1, x2, y2, c)
     line(x0, y0, x1, y1, c)
@@ -55,14 +46,8 @@ function draw_triangle_pixel(x, y, c, point_a, point_b, point_c)
     interpolated_reciprocal_w = (1 / point_a.w) * weights.x + (1 / point_b.w) * weights.y + (1 / point_c.w) * weights.z
     interpolated_reciprocal_w = 1 - interpolated_reciprocal_w
 
-    -- take the z buffer into consideration when drawing the pixel
-    --if (interpolated_reciprocal_w < z_buffer[x][y]) then
-        -- draw the pixel
-        pset(x, y, c)
-
-        -- update the z_buffer for the updated pixel
-        --z_buffer[x][y] = interpolated_reciprocal_w
-    --end
+    -- draw the pixel
+    pset(x, y, c)
 end
 
 function draw_triangle_filled(x0, y0, z0, w0, x1, y1, z1, w1, x2, y2, z2, w2, c)

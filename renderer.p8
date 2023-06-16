@@ -4,6 +4,7 @@ __lua__
 -- PICO-8 SOFTWARE RENDERER
 -- BY WOJTEK RAK
 #include utils.lua
+#include mouse.lua
 #include camera.lua
 #include vectors.lua
 #include draw.lua
@@ -13,14 +14,11 @@ __lua__
 
 -- TODO:
 -- move the mesh loading to the drag and drop (file_test.p8 has the examples)
--- matrices 
 -- camera movement
     -- mouse
 -- some sort of a lighting implementation
--- fix z-buffer functionality (a maybe depending on the point below)
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)
     -- + try scan line with rectfill?
-    -- + remove the zbuffer stuff :(
 -- optimize the useage of matrices for better performance
 -- texture loading
 
@@ -28,9 +26,7 @@ debug = false
 
 -- main
 function _init()
-    -- initialize the z buffer
-    clear_z_buffer()
-
+    mouse.init()
     cam = camera()
     cam.position = vec(0, 0, -1)
 
@@ -40,17 +36,7 @@ function _init()
     zfar = 100
     proj_matrix = mat_perspective(fov, 1, znear, zfar)
 
-    -- 
     load_cube_mesh()
-end
-
--- old, hopefully to be removed
-function project(v) 
-    return vec(
-        (fov*v.x) / v.z,
-        (fov*v.y) / v.z,
-        0
-    )
 end
 
 function _update()
@@ -69,9 +55,14 @@ function _update()
         backface_culling = not backface_culling
     end
     -- toggle debug mode
-    if btnp(❎) and btn(🅾️) then
+    if btnp(❎) and btn(🅾️) then 
         debug = not debug
     end
+    -- mouse input
+    mouse.update()
+
+    -- camera movement
+    camera_movement(cam)
 
     -- gfx process
     triangles_to_render = {}
@@ -84,7 +75,7 @@ function _update()
         cur_mesh.rotation.z += 0.01
 
         -- initial offset for the camera
-        cur_mesh.translation.z = 5
+        cur_mesh.translation.z = 7
 
         -- view matrix
         local target = cam_lookat_target(cam)
@@ -204,15 +195,15 @@ function _draw()
 
     end
 
+    -- mouse draw
+    mouse.draw()
+
     -- debug output
     if (debug) then
         color(7)
         print_sys_info()
         print_mesh_info()
     end
-
-    -- clear the z_buffer at the end of every frame
-    clear_z_buffer()
 end
 
 __gfx__
