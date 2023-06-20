@@ -30,9 +30,6 @@ function cam_lookat_target(c)
 end
 
 function camera_movement(c)
-    last_cam_position = c.position
-    last_cam_direction = c.direction
-
     -- mouse
     if mouse.button == 1 then
         -- pitch 
@@ -72,18 +69,14 @@ function camera_movement(c)
     end
     -- left
     if btn(0) then
-        c.position.x -= c.move_speed
+        local strafe = vec_cross(c.direction, v_up)
+        c.velocity = vec_mul(strafe, c.move_speed)
+        c.position = vec_add(c.position, c.velocity)
     end
     -- right
     if btn(1) then
-        c.position.x += c.move_speed
-    end
-
-    --printh("last position"..dump(last_cam_position))
-    --printh("cur cam position"..dump(c.position))
-    if (c.position != last_cam_position or c.direction != last_cam_direction) then
-        printh("new cam position:"..dump(c.position))
-        printh("new cam direction:"..dump(c.direction))
-        printh("\n")
+        local strafe = vec_cross(c.direction, v_up)
+        c.velocity = vec_mul(strafe, c.move_speed)
+        c.position = vec_sub(c.position, c.velocity)
     end
 end

@@ -197,7 +197,6 @@ function _draw()
         if (drawing_mode == 1 or drawing_mode == 2 or drawing_mode == 4) then
             draw_triangle(cur_triangle[1].x, cur_triangle[1].y, cur_triangle[2].x, cur_triangle[2].y, cur_triangle[3].x, cur_triangle[3].y, 11)
         end
-
     end
 
     -- mouse draw
