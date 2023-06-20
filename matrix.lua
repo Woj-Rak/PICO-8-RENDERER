@@ -87,7 +87,7 @@ function mat_perspective(fov, aspect, znear, zfar)
 end
 
 function mat4_mul_vec(m, v)
-    local result = vec(
+    local result = vec4(
         m[1][1] * v.x + m[1][2] * v.y + m[1][3] * v.z + m[1][4] * v.w,
         m[2][1] * v.x + m[2][2] * v.y + m[2][3] * v.z + m[2][4] * v.w,
         m[3][1] * v.x + m[3][2] * v.y + m[3][3] * v.z + m[3][4] * v.w,

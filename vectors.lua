@@ -1,6 +1,14 @@
 -- every vector will be a vec4
-function vec(x, y, z, w)
+function vec(x, y, z)
+    return {x=x or 0, y=y or 0, z=z or 0}
+end
+
+function vec4(x, y, z, w)
     return {x=x or 0, y=y or 0, z=z or 0, w=w or 1}
+end
+
+function vec4_from_vec(v)
+    return vec4(v.x, v.y, v.z, 1)
 end
 
 function vec_copy(v)
@@ -12,7 +20,7 @@ function vec_len(v)
 end
 
 function vec_add(a, b)
-    return vec(a.x + b.x, a.y + b.y + a.z + b.z)
+    return vec(a.x + b.x, a.y + b.y, a.z + b.z)
 end
 
 function vec_sub(a, b)

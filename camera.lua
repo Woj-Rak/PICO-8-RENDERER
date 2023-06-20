@@ -6,12 +6,12 @@ function camera()
         yaw = 0,
         pitch = 0,
         move_speed = 0.1,
-        scroll_speed = 0.1
+        scroll_speed = 1
     }
 end
 
 function cam_lookat_target(c)
-    local target = vec(0, 0, 1)
+    local target = vec4(0, 0, 1)
 
     local cam_yaw_rot = mat_rot_y(c.yaw)
     local cam_pitch_rot = mat_rot_x(c.pitch)
@@ -30,25 +30,8 @@ function cam_lookat_target(c)
 end
 
 function camera_movement(c)
-    -- keyboard
-    -- forward
-    if btn(2) then
-        c.velocity = vec_mul(c.direction, c.move_speed)
-        c.position = vec_add(c.position, c.velocity)
-    end
-    -- back
-    if btn(3) then
-        c.velocity = vec_mul(c.direction, c.move_speed)
-        c.position = vec_sub(c.position, c.velocity)
-    end
-    -- left
-    if btn(0) then
-        c.position.x -= c.move_speed
-    end
-    -- right
-    if btn(1) then
-        c.position.x += c.move_speed
-    end
+    last_cam_position = c.position
+    last_cam_direction = c.direction
 
     -- mouse
     if mouse.button == 1 then
@@ -75,5 +58,32 @@ function camera_movement(c)
         c.position.y += c.scroll_speed
     end
 
-    --printh(dump(c.position))
+    if debug then return end
+    -- keyboard
+    -- forward
+    if btn(2) then
+        c.velocity = vec_mul(c.direction, c.move_speed)
+        c.position = vec_add(c.position, c.velocity)
+    end
+    -- back
+    if btn(3) then
+        c.velocity = vec_mul(c.direction, c.move_speed)
+        c.position = vec_sub(c.position, c.velocity)
+    end
+    -- left
+    if btn(0) then
+        c.position.x -= c.move_speed
+    end
+    -- right
+    if btn(1) then
+        c.position.x += c.move_speed
+    end
+
+    --printh("last position"..dump(last_cam_position))
+    --printh("cur cam position"..dump(c.position))
+    if (c.position != last_cam_position or c.direction != last_cam_direction) then
+        printh("new cam position:"..dump(c.position))
+        printh("new cam direction:"..dump(c.direction))
+        printh("\n")
+    end
 end
