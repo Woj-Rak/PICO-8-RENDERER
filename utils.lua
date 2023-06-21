@@ -1,3 +1,5 @@
+peak_cpu_useage = 0
+
 -- used to output the contents of anything and everything
 function dump(o)
    if type(o) == 'table' then
@@ -13,8 +15,9 @@ function dump(o)
 end
 
 function print_sys_info()
+   if ((stat(1)*100) > peak_cpu_useage) peak_cpu_useage = (stat(1)*100)
    print("fps:"..stat(7).."fps")
-   print("cpu:"..(stat(1)*100).."%")
+   print("cpu:"..(stat(1)*100).."% ("..peak_cpu_useage.."% peak)")
    print("memory:"..stat(0).." kb")
 end
 

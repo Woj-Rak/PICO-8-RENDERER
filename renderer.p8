@@ -27,7 +27,6 @@ auto_rotate = false
 function _init()
     mouse.init()
     cam = camera()
-    --cam.position = vec(0, 0, -1)
 
     -- projection matrix
     fov = 120
