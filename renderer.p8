@@ -18,7 +18,8 @@ __lua__
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)
     -- + try scan line with rectfill?
 -- optimize the useage of matrices for better performance
--- texture loading
+-- texture loading?
+    -- removed a lot of the texture related code so all of that will need another look
 
 debug = false
 auto_rotate = false
@@ -38,7 +39,33 @@ function _init()
 end
 
 function _update()
+    -- check for file loads
+    if (stat(120) and not load_pending) then
+        load_pending = true
+    end
+
     -- input
+    if (load_pending) then
+        if btnp(⬇️) then
+            load_menu_option += 1
+        end
+        if btnp(⬆️) then
+            load_menu_option -= 1
+        end
+
+        if load_menu_option > 2 then load_menu_option = 1 end
+        if load_menu_option < 1 then load_menu_option = 2 end
+
+        if (btnp(🅾️)) then
+            if (load_menu_option == 1) then
+                load_mesh()
+            elseif (load_menu_option == 2) then
+                abort_load()
+            end
+        end
+        return
+    end
+
     -- change rendering modes
     if btnp(➡️) and btn(🅾️) then
         drawing_mode += 1 
@@ -174,6 +201,9 @@ end
 function _draw()
     cls(12)
 
+    if load_in_progress then return end
+
+    -- rendering
     for t=1, #triangles_to_render do
         local cur_triangle = triangles_to_render[t]
 
@@ -200,6 +230,12 @@ function _draw()
 
     -- mouse draw
     mouse.draw()
+
+    -- file loading
+    if load_pending then
+        draw_load_msg()
+        return
+    end
 
     -- debug output
     if (debug) then
