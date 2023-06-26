@@ -34,23 +34,23 @@ cube_vertices = {
 
 cube_faces = {
     -- front
-    { a = 1, b = 2, c = 3, color = 8 },
-    { a = 1, b = 3, c = 4, color = 8 },
+    { a = 1, b = 2, c = 3},
+    { a = 1, b = 3, c = 4},
     -- right
-    { a = 4, b = 3, c = 5, color = 8 },
-    { a = 4, b = 5, c = 6, color = 8 },
+    { a = 4, b = 3, c = 5},
+    { a = 4, b = 5, c = 6},
     -- back
-    { a = 6, b = 5, c = 7, color = 8 },
-    { a = 6, b = 7, c = 8, color = 8 },
+    { a = 6, b = 5, c = 7},
+    { a = 6, b = 7, c = 8},
     -- left
-    { a = 8, b = 7, c = 2, color = 8 },
-    { a = 8, b = 2, c = 1, color = 8 },
+    { a = 8, b = 7, c = 2},
+    { a = 8, b = 2, c = 1},
     -- top
-    { a = 2, b = 7, c = 5, color = 8 },
-    { a = 2, b = 5, c = 3, color = 8 },
+    { a = 2, b = 7, c = 5},
+    { a = 2, b = 5, c = 3},
     -- bottom
-    { a = 6, b = 8, c = 1, color = 8 },
-    { a = 6, b = 1, c = 4, color = 8 }
+    { a = 6, b = 8, c = 1},
+    { a = 6, b = 1, c = 4}
 }
 
 -- function to load mesh data into a mesh object
@@ -77,6 +77,41 @@ end
 function load_mesh()
     load_pending = false
     load_in_progress = true
+
+    local file_contents=""
+    local new_mesh = mesh()
+
+    repeat
+        size = serial(0x800, 0x4300, 0x1000)
+        for i=0,size do 
+            b = peek(0x4300 + i)
+            file_contents = file_contents..chr(b)
+        end
+    until(size == 0)
+
+    file_contents = split(file_contents, "\n")
+
+    for i=1,#file_contents do
+        local line_type = split(file_contents[i], " ")
+        line_type = line_type[1]
+        -- vertex data
+        if (line_type=="v") then
+            local cur_vertex = split(file_contents[i], " ")
+            add(new_mesh.vertices, vec(cur_vertex[2],cur_vertex[3],cur_vertex[4]))
+        end
+        -- face data
+        -- ignores texture and normal data right now
+        if (line_type=="f") then
+            local cur_face = split(file_contents[i], " ")
+            add(new_mesh.faces, {a = sub(cur_face[2], 1, 1), b = sub(cur_face[3], 1, 1), c = sub(cur_face[4], 1, 1)})
+        end
+    end
+
+    -- todo: give the user control over this in the future?
+    new_mesh.translation.x = 5 * #meshes
+
+    add(meshes, new_mesh)
+    load_in_progress = false
 end
 
 function draw_load_msg()
@@ -87,8 +122,10 @@ function draw_load_msg()
     print("import detected!", 32, 46, 7)
     print("load mesh?", 44, 53, 7)
     -- selector
+    -- yes
     if load_menu_option == 1 then
         rectfill(55, 62, 67, 68, 8)
+    -- no
     elseif load_menu_option == 2 then
         rectfill(55, 69, 67, 75, 8)
     end

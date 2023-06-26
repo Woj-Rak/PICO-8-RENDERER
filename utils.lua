@@ -23,12 +23,15 @@ end
 
 function print_mesh_info()
    local vert_count = 0
+   local face_count = 0
 
    for m=1,#meshes do
       vert_count += #meshes[m].vertices
+      face_count += #meshes[m].faces
    end
 
    print("tris:"..#triangles_to_render)
    print("verts:"..vert_count)
+   print("faces:"..face_count)
    print("backface cull:"..(backface_culling and 'true' or 'false'), 0, 123)
 end

@@ -14,12 +14,18 @@ __lua__
 
 -- TODO:
 -- move the mesh loading to the drag and drop (file_test.p8 has the examples)
+    -- give ability to set the initial position of the new mesh
+    -- give option to replace the current mesh or load in 
+-- make it a one mesh at a time thing
 -- some sort of a lighting implementation
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)
     -- + try scan line with rectfill?
 -- optimize the useage of matrices for better performance
 -- texture loading?
     -- removed a lot of the texture related code so all of that will need another look
+-- if not textures then use solid colors that can be changed at run time
+-- draw controls on the screen
+-- add sound effects because why not lmao
 
 debug = false
 auto_rotate = false
@@ -35,7 +41,7 @@ function _init()
     zfar = 100
     proj_matrix = mat_perspective(fov, 1, znear, zfar)
 
-    load_cube_mesh()
+    --load_cube_mesh()
 end
 
 function _update()
@@ -120,13 +126,13 @@ function _update()
 
         for f=1, #cur_mesh.faces do
             local cull = false
-            cur_face = cur_mesh.faces[f]         
+            cur_face = cur_mesh.faces[f]
 
             local face_vertices = {vec(), vec(), vec()}
 
-            face_vertices[1] = cur_mesh.vertices[cur_face.a]
-            face_vertices[2] = cur_mesh.vertices[cur_face.b]
-            face_vertices[3] = cur_mesh.vertices[cur_face.c]
+            face_vertices[1] = cur_mesh.vertices[tonum(cur_face.a)]
+            face_vertices[2] = cur_mesh.vertices[tonum(cur_face.b)]
+            face_vertices[3] = cur_mesh.vertices[tonum(cur_face.c)]
 
             local projected_triangle = {}
             local transformed_vertices = {}
