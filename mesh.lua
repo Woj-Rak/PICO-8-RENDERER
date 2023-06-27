@@ -102,13 +102,17 @@ function load_mesh()
         -- face data
         -- ignores texture and normal data right now
         if (line_type=="f") then
-            local cur_face = split(file_contents[i], " ")
-            add(new_mesh.faces, {a = sub(cur_face[2], 1, 1), b = sub(cur_face[3], 1, 1), c = sub(cur_face[4], 1, 1)})
+            local new_face = {}
+            cur_face = split(file_contents[i], " ")
+
+            for i=2,4 do 
+                cur_point = split(cur_face[i], "/")
+                add(new_face, cur_point[1]) 
+            end
+
+            add(new_mesh.faces, {a = new_face[1], b = new_face[2], c = new_face[3]})
         end
     end
-
-    -- todo: give the user control over this in the future?
-    new_mesh.translation.x = 5 * #meshes
 
     add(meshes, new_mesh)
     load_in_progress = false

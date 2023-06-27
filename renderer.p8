@@ -13,17 +13,15 @@ __lua__
 #include matrix.lua
 
 -- TODO:
--- move the mesh loading to the drag and drop (file_test.p8 has the examples)
-    -- give ability to set the initial position of the new mesh
-    -- give option to replace the current mesh or load in 
 -- make it a one mesh at a time thing
+-- generate cool bg's if performance permits
 -- some sort of a lighting implementation
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)
     -- + try scan line with rectfill?
 -- optimize the useage of matrices for better performance
 -- texture loading?
     -- removed a lot of the texture related code so all of that will need another look
--- if not textures then use solid colors that can be changed at run time
+-- if not textures then use solid colors that can be changed at run time?
 -- draw controls on the screen
 -- add sound effects because why not lmao
 
@@ -34,6 +32,7 @@ auto_rotate = false
 function _init()
     mouse.init()
     cam = camera()
+    cam.position.z -= 5
 
     -- projection matrix
     fov = 120
@@ -111,9 +110,6 @@ function _update()
             cur_mesh.rotation.z += 0.01
         end
 
-        -- initial offset for the camera
-        cur_mesh.translation.z = 7
-
         -- view matrix
         local target = cam_lookat_target(cam)
         local view_matrix = mat_look_at(cam.position, target)
@@ -144,9 +140,9 @@ function _update()
                 -- world matrix
                 world_matrix = mat_identity() 
                 world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
-                world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
-                world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
-                world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
+                --world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
+                --world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
+                --world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
                 world_matrix = mat4_mul_mat4(translation_matrix, world_matrix)
 
                 -- multiple world matrix by the original vector
