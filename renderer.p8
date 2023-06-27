@@ -13,7 +13,6 @@ __lua__
 #include matrix.lua
 
 -- TODO:
--- display name of the mesh?
 -- generate cool bg's if performance permits
 -- some sort of a lighting implementation
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)
@@ -89,11 +88,15 @@ function _update()
     if btnp(⬇️) and btn(🅾️) then
         auto_rotate = not auto_rotate
     end
+    -- add cube mesh
+    if btnp(🅾️) and #meshes == 0 then
+        load_cube_mesh()
+    end
     -- toggle debug mode
     if btnp(❎) and btn(🅾️) then 
         debug = not debug
     end
-    if btn(❎) and not debug then
+    if btn(❎) and not debug and #meshes > 0 then
         showing_controls = true
     else
         showing_controls = false
@@ -102,7 +105,9 @@ function _update()
     mouse.update()
 
     -- camera movement
-    camera_movement(cam)
+    if #meshes > 0 then
+        camera_movement(cam)
+    end
 
     -- gfx process
     triangles_to_render = {}
@@ -211,9 +216,11 @@ function _draw()
 
     if load_in_progress then return end
 
-    if (showing_controls) then
-        show_controls()
+    if (#meshes == 0) then
+        oprint("drag an .obj model here", 16, 50, 0, 7)
+        oprint("or press 🅾️ to load a cube", 10, 58, 0, 7)
     end
+
     -- rendering
     for t=1, #triangles_to_render do
         local cur_triangle = triangles_to_render[t]
@@ -241,6 +248,10 @@ function _draw()
 
     -- mouse draw
     mouse.draw()
+
+    if (showing_controls) then
+        show_controls()
+    end
 
     -- file loading
     if load_pending then

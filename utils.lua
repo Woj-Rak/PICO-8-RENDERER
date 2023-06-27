@@ -45,6 +45,7 @@ function show_controls()
    oprint("render mode:⬅️/➡️+🅾️",16,32,0,7)
    oprint("backface culling:⬆️+🅾️",16,40,0,7)
    oprint("auto rotate:⬇️+🅾️",16,48,0,7)
+   oprint("debug info:❎+🅾️",16,56,0,7)
 end
 
 function oprint(t,x,y,c1,c2)
