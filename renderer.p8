@@ -13,7 +13,9 @@ __lua__
 #include matrix.lua
 
 -- TODO:
--- make it a one mesh at a time thing
+-- controls display when holding the "x" button
+    -- do it with an outlined font
+-- display name of the mesh?
 -- generate cool bg's if performance permits
 -- some sort of a lighting implementation
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)

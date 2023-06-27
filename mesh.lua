@@ -103,13 +103,14 @@ function load_mesh()
         -- ignores texture and normal data right now
         if (line_type=="f") then
             local new_face = {}
-            cur_face = split(file_contents[i], " ")
+            local cur_face = split(file_contents[i], " ")
 
             for i=2,4 do 
-                cur_point = split(cur_face[i], "/")
+                local cur_point = split(cur_face[i], "/")
                 add(new_face, cur_point[1]) 
             end
 
+            --printh(dump(new_face))
             add(new_mesh.faces, {a = new_face[1], b = new_face[2], c = new_face[3]})
         end
     end

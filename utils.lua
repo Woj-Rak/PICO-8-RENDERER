@@ -16,7 +16,7 @@ end
 
 function print_sys_info()
    if ((stat(1)*100) > peak_cpu_useage) peak_cpu_useage = (stat(1)*100)
-   print("fps:"..stat(7).."fps")
+   print("fps:"..stat(7))
    print("cpu:"..(stat(1)*100).."% ("..peak_cpu_useage.."% peak)")
    print("memory:"..stat(0).." kb")
 end
@@ -33,5 +33,6 @@ function print_mesh_info()
    print("tris:"..#triangles_to_render)
    print("verts:"..vert_count)
    print("faces:"..face_count)
-   print("backface cull:"..(backface_culling and 'true' or 'false'), 0, 123)
+   print("BFC:"..(backface_culling and 'ON' or 'OFF').."(⬆️+🅾️)", 0, 117)
+   print("AUTO-ROTATE:"..(auto_rotate and 'ON' or 'OFF').."(⬇️+🅾️)", 0, 123)
 end
