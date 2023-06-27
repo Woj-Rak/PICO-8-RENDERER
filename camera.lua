@@ -57,6 +57,8 @@ function camera_movement(c)
 
     if debug then return end
     -- keyboard
+    -- if modifier key is held down leave early
+    if btn(4) then return end
     -- forward
     if btn(2) then
         c.velocity = vec_mul(c.direction, c.move_speed)
