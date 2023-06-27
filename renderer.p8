@@ -13,8 +13,6 @@ __lua__
 #include matrix.lua
 
 -- TODO:
--- controls display when holding the "x" button
-    -- do it with an outlined font
 -- display name of the mesh?
 -- generate cool bg's if performance permits
 -- some sort of a lighting implementation
@@ -24,7 +22,6 @@ __lua__
 -- texture loading?
     -- removed a lot of the texture related code so all of that will need another look
 -- if not textures then use solid colors that can be changed at run time?
--- draw controls on the screen
 -- add sound effects because why not lmao
 
 debug = false
@@ -95,6 +92,11 @@ function _update()
     -- toggle debug mode
     if btnp(❎) and btn(🅾️) then 
         debug = not debug
+    end
+    if btn(❎) and not debug then
+        showing_controls = true
+    else
+        showing_controls = false
     end
     -- mouse input
     mouse.update()
@@ -209,6 +211,9 @@ function _draw()
 
     if load_in_progress then return end
 
+    if (showing_controls) then
+        show_controls()
+    end
     -- rendering
     for t=1, #triangles_to_render do
         local cur_triangle = triangles_to_render[t]

@@ -1,4 +1,5 @@
 peak_cpu_useage = 0
+showing_controls = false
 
 -- used to output the contents of anything and everything
 function dump(o)
@@ -35,6 +36,15 @@ function print_mesh_info()
    print("faces:"..face_count)
    print("BFC:"..(backface_culling and 'ON' or 'OFF').."(⬆️+🅾️)", 0, 117)
    print("AUTO-ROTATE:"..(auto_rotate and 'ON' or 'OFF').."(⬇️+🅾️)", 0, 123)
+end
+
+function show_controls()
+   oprint("controls",47,8,0,7)
+   oprint("move:⬆️⬅️⬇️➡️",16,16,0,7)
+   oprint("look:click+drag",16,24,0,7)
+   oprint("render mode:⬅️/➡️+🅾️",16,32,0,7)
+   oprint("backface culling:⬆️+🅾️",16,40,0,7)
+   oprint("auto rotate:⬇️+🅾️",16,48,0,7)
 end
 
 function oprint(t,x,y,c1,c2)
