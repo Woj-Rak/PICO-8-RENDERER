@@ -15,14 +15,15 @@ __lua__
 
 -- TODO:
 -- critical:
--- figure out why the monkey isn't loading
 -- let user controls which axis are spinning
--- TODO: the lighting is based on the camera position instead of the light direction right now
+-- figure out how to do rotations without killing performance
+-- issues with multiple meshes rendering
+    -- + calculate average depth and just use the painters algorithm
+-- optimize the useage of matrices for better performance
 -- should try:
--- generate cool bg's if performance permits
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)
     -- + try scan line with rectfill?
--- optimize the useage of matrices for better performance
+
 -- next version:
 -- texture loading?
     -- removed a lot of the texture related code so all of that will need another look
@@ -31,14 +32,17 @@ __lua__
 
 debug = false
 auto_rotate = false
+rot_x_enabled = true
+rot_y_enabled = true
+rot_z_enabled = true
 
 -- main
 function _init()
     mouse.init()
     cam = camera()
-    cam.position.y -= 5
+    cam.position.y = 5
     cam.position.z -= 8 
-    cam.pitch -= 0.5 
+    cam.pitch = 0.5 
 
     -- projection matrix
     fov = 120
@@ -135,7 +139,7 @@ function _update()
         local target = cam_lookat_target(cam)
         local view_matrix = mat_look_at(cam.position, target)
         -- translation scale rotation matrices
-        local scale_matrix = mat_scale(cur_mesh.scale.x, cur_mesh.scale.y, cur_mesh.scale.z)
+        --local scale_matrix = mat_scale(cur_mesh.scale.x, cur_mesh.scale.y, cur_mesh.scale.z)
         local translation_matrix = mat_translation(cur_mesh.translation.x, cur_mesh.translation.y, cur_mesh.translation.z)
         local rot_matrix_x = mat_rot_x(cur_mesh.rotation.x)
         local rot_matrix_y = mat_rot_y(cur_mesh.rotation.y)
@@ -156,10 +160,10 @@ function _update()
 
                 -- world matrix
                 world_matrix = mat_identity() 
-                world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
-                world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
-                world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
-                world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
+                --world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
+                --world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
+                --world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
+                --world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
                 world_matrix = mat4_mul_mat4(translation_matrix, world_matrix)
 
                 -- multiple world matrix by the original vector
@@ -186,8 +190,7 @@ function _update()
             local origin = vec(0, 0, 0)
             local cam_ray = vec_sub(origin, vec_a)
 
-            --local dot_normal_cam = vec_dot(n, cam_ray)
-            local dot_normal_cam = vec_dot(cam_ray, n)
+            local dot_normal_cam = vec_dot(n, cam_ray)
 
             -- backface culling
             if(backface_culling) then
@@ -208,6 +211,8 @@ function _update()
             if (not cull) then
                 for i=1, 3 do
                     projected_point = mat4_mul_vec_project(proj_matrix, transformed_vertices[i])
+                    -- fix the orientation
+                    projected_point.y *= -1
 
                     -- scale into view
                     projected_point.x *= (127/2) 

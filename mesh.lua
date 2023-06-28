@@ -89,7 +89,7 @@ function load_mesh()
         end
     until(size == 0)
 
-    file_contents = split(file_contents, "\n")
+    file_contents = split(file_contents, "\n", false)
 
     for i=1,#file_contents do
         local line_type = split(file_contents[i], " ")
