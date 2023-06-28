@@ -7,7 +7,7 @@ backface_culling = true
 -- 4 = solid color + wireframe 
 -- 5 = vertices only
 
-drawing_mode = 1
+drawing_mode = 3
 max_draw_mode = 5 
 
 

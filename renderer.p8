@@ -3,6 +3,7 @@ version 38
 __lua__
 -- PICO-8 SOFTWARE RENDERER
 -- BY WOJTEK RAK
+#include lights.lua
 #include utils.lua
 #include mouse.lua
 #include camera.lua
@@ -13,15 +14,20 @@ __lua__
 #include matrix.lua
 
 -- TODO:
+-- critical:
+-- figure out why the monkey isn't loading
+-- let user controls which axis are spinning
+-- TODO: the lighting is based on the camera position instead of the light direction right now
+-- should try:
 -- generate cool bg's if performance permits
--- some sort of a lighting implementation
 -- look into filled triangle performance (it's extremely bad right now with the cube mesh)
     -- + try scan line with rectfill?
 -- optimize the useage of matrices for better performance
+-- next version:
 -- texture loading?
     -- removed a lot of the texture related code so all of that will need another look
 -- if not textures then use solid colors that can be changed at run time?
--- add sound effects because why not lmao
+
 
 debug = false
 auto_rotate = false
@@ -40,7 +46,11 @@ function _init()
     zfar = 100
     proj_matrix = mat_perspective(fov, 1, znear, zfar)
 
-    --load_cube_mesh()
+    main_light = light()
+    main_light.direction.z = 1
+
+    -- todo: give user control over this?
+    mesh_color = 7
 end
 
 function _update()
@@ -135,11 +145,7 @@ function _update()
             local cull = false
             cur_face = cur_mesh.faces[f]
 
-            local face_vertices = {vec(), vec(), vec()}
-
-            face_vertices[1] = cur_mesh.vertices[tonum(cur_face.a)]
-            face_vertices[2] = cur_mesh.vertices[tonum(cur_face.b)]
-            face_vertices[3] = cur_mesh.vertices[tonum(cur_face.c)]
+            local face_vertices = {cur_mesh.vertices[tonum(cur_face.a)], cur_mesh.vertices[tonum(cur_face.b)], cur_mesh.vertices[tonum(cur_face.c)]}
 
             local projected_triangle = {}
             local transformed_vertices = {}
@@ -151,9 +157,9 @@ function _update()
                 -- world matrix
                 world_matrix = mat_identity() 
                 world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
                 world_matrix = mat4_mul_mat4(translation_matrix, world_matrix)
 
                 -- multiple world matrix by the original vector
@@ -164,29 +170,38 @@ function _update()
 
                 add(transformed_vertices, transformed_vertex)
             end
+            
+            local vec_a = vec_copy(transformed_vertices[1])
+            local vec_b = vec_copy(transformed_vertices[2])
+            local vec_c = vec_copy(transformed_vertices[3])
+
+            local vec_ab = vec_sub(vec_b, vec_a)
+            local vec_ac = vec_sub(vec_c, vec_a)
+            vec_normalize(vec_ab)
+            vec_normalize(vec_ac)
+
+            local n = vec_cross(vec_ab, vec_ac)
+            vec_normalize(n)
+
+            local origin = vec(0, 0, 0)
+            local cam_ray = vec_sub(origin, vec_a)
+
+            --local dot_normal_cam = vec_dot(n, cam_ray)
+            local dot_normal_cam = vec_dot(cam_ray, n)
 
             -- backface culling
             if(backface_culling) then
-                local vec_a = vec_copy(transformed_vertices[1])
-                local vec_b = vec_copy(transformed_vertices[2])
-                local vec_c = vec_copy(transformed_vertices[3])
-
-                local vec_ab = vec_sub(vec_b, vec_a)
-                local vec_ac = vec_sub(vec_c, vec_a)
-                vec_normalize(vec_ab)
-                vec_normalize(vec_ac)
-
-                local n = vec_cross(vec_ab, vec_ac)
-                vec_normalize(n)
-
-                local origin = vec(0, 0, 0)
-                local cam_ray = vec_sub(origin, vec_a)
-
-                local dot_normal_cam = vec_dot(n, cam_ray)
-
                 if (dot_normal_cam < 0) then
                     cull = true
                 end
+            end
+
+            -- shading
+            local light_intensity = -vec_dot(n, main_light.direction)
+            if light_intensity > 1 then 
+                light_intensity = 1
+            elseif light_intensity < 0 then
+                light_intensity = 0
             end
 
             -- if face is not culled project it and add triangles to render
@@ -205,6 +220,7 @@ function _update()
                     projected_triangle[i] = projected_point
                 end
 
+                projected_triangle.c = light_intensity
                 add(triangles_to_render, projected_triangle)
             end
         end
@@ -234,10 +250,21 @@ function _draw()
         
         -- draw solid triangle
         if (drawing_mode == 3 or drawing_mode == 4) then
+            local new_color
+
+            -- play around with these thresholds
+            if cur_triangle.c > .6 then
+                new_color = mesh_color
+            elseif cur_triangle.c > .35 then
+                new_color = 6
+            else
+                new_color = 5
+            end
+
             draw_triangle_filled(cur_triangle[1].x,cur_triangle[1].y,cur_triangle[1].z,cur_triangle[1].w,
                                  cur_triangle[2].x,cur_triangle[2].y,cur_triangle[2].z,cur_triangle[2].w,
                                  cur_triangle[3].x,cur_triangle[3].y,cur_triangle[3].z,cur_triangle[3].w,
-                                 8)
+                                 new_color)
         end
 
         -- draw wireframe triangle

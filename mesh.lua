@@ -110,10 +110,12 @@ function load_mesh()
                 add(new_face, cur_point[1]) 
             end
 
-            --printh(dump(new_face))
             add(new_mesh.faces, {a = new_face[1], b = new_face[2], c = new_face[3]})
         end
     end
+
+    -- TODO: give user control over this
+    new_mesh.translation.z += 5 * #meshes+1
 
     add(meshes, new_mesh)
     load_in_progress = false

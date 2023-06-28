@@ -41,7 +41,7 @@ end
 function show_controls()
    oprint("controls",47,8,0,7)
    oprint("move:⬆️⬅️⬇️➡️",16,16,0,7)
-   oprint("look:click+drag",16,24,0,7)
+   oprint("look:click+drag+scroll",16,24,0,7)
    oprint("render mode:⬅️/➡️+🅾️",16,32,0,7)
    oprint("backface culling:⬆️+🅾️",16,40,0,7)
    oprint("auto rotate:⬇️+🅾️",16,48,0,7)
