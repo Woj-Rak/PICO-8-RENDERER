@@ -115,7 +115,7 @@ function load_mesh()
     end
 
     -- TODO: give user control over this
-    new_mesh.translation.z += 5 * #meshes+1
+    --new_mesh.translation.x -= 5 * #meshes+1
 
     add(meshes, new_mesh)
     load_in_progress = false

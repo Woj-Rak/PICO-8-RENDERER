@@ -15,16 +15,12 @@ __lua__
 
 -- TODO:
 -- critical:
+-- camera is funky again
 -- let user controls which axis are spinning
--- figure out how to do rotations without killing performance
 -- issues with multiple meshes rendering
     -- + calculate average depth and just use the painters algorithm
--- optimize the useage of matrices for better performance
--- should try:
--- look into filled triangle performance (it's extremely bad right now with the cube mesh)
-    -- + try scan line with rectfill?
-
 -- next version:
+-- different trifill function?
 -- texture loading?
     -- removed a lot of the texture related code so all of that will need another look
 -- if not textures then use solid colors that can be changed at run time?
@@ -52,9 +48,6 @@ function _init()
 
     main_light = light()
     main_light.direction.z = 1
-
-    -- todo: give user control over this?
-    mesh_color = 7
 end
 
 function _update()
@@ -139,7 +132,7 @@ function _update()
         local target = cam_lookat_target(cam)
         local view_matrix = mat_look_at(cam.position, target)
         -- translation scale rotation matrices
-        --local scale_matrix = mat_scale(cur_mesh.scale.x, cur_mesh.scale.y, cur_mesh.scale.z)
+        local scale_matrix = mat_scale(cur_mesh.scale.x, cur_mesh.scale.y, cur_mesh.scale.z)
         local translation_matrix = mat_translation(cur_mesh.translation.x, cur_mesh.translation.y, cur_mesh.translation.z)
         local rot_matrix_x = mat_rot_x(cur_mesh.rotation.x)
         local rot_matrix_y = mat_rot_y(cur_mesh.rotation.y)
@@ -160,10 +153,10 @@ function _update()
 
                 -- world matrix
                 world_matrix = mat_identity() 
-                --world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
+                world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
                 world_matrix = mat4_mul_mat4(translation_matrix, world_matrix)
 
                 -- multiple world matrix by the original vector
@@ -259,7 +252,7 @@ function _draw()
 
             -- play around with these thresholds
             if cur_triangle.c > .6 then
-                new_color = mesh_color
+                new_color = 7 
             elseif cur_triangle.c > .35 then
                 new_color = 6
             else
