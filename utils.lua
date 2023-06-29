@@ -35,7 +35,7 @@ function print_mesh_info()
    print("verts:"..vert_count)
    print("faces:"..face_count)
    print("BFC:"..(backface_culling and 'ON' or 'OFF').."(⬆️+🅾️)", 0, 117)
-   print("AUTO-ROTATE:"..(auto_rotate and 'ON' or 'OFF').."(⬇️+🅾️)", 0, 123)
+   print("ROTATION-MODE:"..rotation_mode.."(⬇️+🅾️)", 0, 123)
 end
 
 function show_controls()
@@ -44,7 +44,7 @@ function show_controls()
    oprint("look:click+drag+scroll",16,24,0,7)
    oprint("render mode:⬅️/➡️+🅾️",16,32,0,7)
    oprint("backface culling:⬆️+🅾️",16,40,0,7)
-   oprint("auto rotate:⬇️+🅾️",16,48,0,7)
+   oprint("rotation mode:⬇️+🅾️",16,48,0,7)
    oprint("debug info:❎+🅾️",16,56,0,7)
 end
 

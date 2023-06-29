@@ -114,7 +114,7 @@ function load_mesh()
         end
     end
 
-    -- TODO: give user control over this
+    -- TODO: give user control over this?
     new_mesh.translation.z = 5 * #meshes
 
     add(meshes, new_mesh)

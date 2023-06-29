@@ -15,12 +15,11 @@ __lua__
 
 -- TODO:
 -- critical:
--- z rotation is wonky af
 -- let user controls which axis are spinning
 -- issues with multiple meshes rendering
     -- + calculate average depth and just use the painters algorithm
--- mesh scaling = hold button + scroll
 -- add some stuff to the github readme and make repo public
+
 -- next version:
 -- different trifill function?
 -- texture loading?
@@ -29,10 +28,11 @@ __lua__
 
 
 debug = false
-auto_rotate = false
-rot_x_enabled = true
-rot_y_enabled = true
-rot_z_enabled = true
+-- 0 = no rotation
+-- 1 = y axis rotation
+-- 2 = x axis rotation
+-- 3 = x and y rotation
+rotation_mode = 0 
 
 -- main
 function _init()
@@ -95,7 +95,8 @@ function _update()
     end
     -- auto rotate toggle
     if btnp(⬇️) and btn(🅾️) then
-        auto_rotate = not auto_rotate
+        rotation_mode += 1
+        if rotation_mode > 3 then rotation_mode = 0 end
     end
     -- add cube mesh
     if btnp(🅾️) and #meshes == 0 then
@@ -124,11 +125,12 @@ function _update()
     for m=1, #meshes do
         cur_mesh = meshes[m]
 
-        if (auto_rotate) then
-            --cur_mesh.rotation.x += 0.01
-            --cur_mesh.rotation.y += 0.01
-            cur_mesh.rotation.z += 0.01
-            --cur_mesh.translation.y += 0.01
+        if rotation_mode == 1 or rotation_mode == 3 then
+            cur_mesh.rotation.x += 0.01
+        end
+
+        if rotation_mode == 2 or rotation_mode == 3 then 
+            cur_mesh.rotation.y += 0.01
         end
 
         -- view matrix
@@ -139,7 +141,6 @@ function _update()
         local translation_matrix = mat_translation(cur_mesh.translation.x, cur_mesh.translation.y, cur_mesh.translation.z)
         local rot_matrix_x = mat_rot_x(cur_mesh.rotation.x)
         local rot_matrix_y = mat_rot_y(cur_mesh.rotation.y)
-        local rot_matrix_z = mat_rot_z(cur_mesh.rotation.z)
 
         for f=1, #cur_mesh.faces do
             local cull = false
@@ -154,12 +155,11 @@ function _update()
                 cull = false
                 local transformed_vertex = vec4_from_vec(vec_copy(face_vertices[i]))
 
+                -- removed scale and z axis rotation for performance
                 -- world matrix
                 world_matrix = mat_identity() 
-                world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
-                --world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
-                world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
+                world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
                 world_matrix = mat4_mul_mat4(translation_matrix, world_matrix)
                 -- multiple world matrix by the original vector
                 transformed_vertex = mat4_mul_vec(world_matrix, transformed_vertex)
