@@ -14,9 +14,6 @@ __lua__
 #include matrix.lua
 
 -- TODO:
--- critical:
--- add some stuff to the github readme and make repo public
-
 -- next version:
 -- different trifill function?
 -- texture loading?
