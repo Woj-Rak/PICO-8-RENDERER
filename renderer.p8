@@ -15,9 +15,6 @@ __lua__
 
 -- TODO:
 -- critical:
--- let user controls which axis are spinning
--- issues with multiple meshes rendering
-    -- + calculate average depth and just use the painters algorithm
 -- add some stuff to the github readme and make repo public
 
 -- next version:
@@ -25,7 +22,7 @@ __lua__
 -- texture loading?
     -- removed a lot of the texture related code so all of that will need another look
 -- if not textures then use solid colors that can be changed at run time?
-
+-- shading implemenation something along the lines of pico-cad
 
 debug = false
 -- 0 = no rotation
@@ -194,6 +191,9 @@ function _update()
                 end
             end
 
+            -- average depth
+            local avg_depth = (transformed_vertices[1].z + transformed_vertices[2].z + transformed_vertices[3].z) / 3
+
             -- shading
             local light_intensity = -vec_dot(n, main_light.direction)
             if light_intensity > 1 then 
@@ -221,7 +221,22 @@ function _update()
                 end
 
                 projected_triangle.c = light_intensity
+                projected_triangle.avg_depth = avg_depth
+
                 add(triangles_to_render, projected_triangle)
+            end
+        end
+    end
+
+    -- sort the triangles to render by their average depth    
+    if (backface_culling and #meshes < 2) then return end
+
+    for i=1,#triangles_to_render do
+        for j=1,#triangles_to_render do
+            if triangles_to_render[i].avg_depth > triangles_to_render[j].avg_depth then
+                local tmp = triangles_to_render[i]
+                triangles_to_render[i] = triangles_to_render[j]
+                triangles_to_render[j] = tmp
             end
         end
     end
