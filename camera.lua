@@ -34,10 +34,10 @@ function camera_movement(c)
     if mouse.button == 1 then
         -- pitch 
         if mouse.y < mouse.last_y then
-            c.pitch -= mouse.move_sens 
+            c.pitch += mouse.move_sens 
         end
         if mouse.y > mouse.last_y then
-            c.pitch += mouse.move_sens 
+            c.pitch -= mouse.move_sens 
         end
         -- yaw
         if mouse.x < mouse.last_x then

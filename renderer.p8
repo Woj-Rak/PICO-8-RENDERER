@@ -15,10 +15,12 @@ __lua__
 
 -- TODO:
 -- critical:
--- camera is funky again
+-- z rotation is wonky af
 -- let user controls which axis are spinning
 -- issues with multiple meshes rendering
     -- + calculate average depth and just use the painters algorithm
+-- mesh scaling = hold button + scroll
+-- add some stuff to the github readme and make repo public
 -- next version:
 -- different trifill function?
 -- texture loading?
@@ -123,9 +125,10 @@ function _update()
         cur_mesh = meshes[m]
 
         if (auto_rotate) then
-            cur_mesh.rotation.x += 0.01
-            cur_mesh.rotation.y += 0.01
+            --cur_mesh.rotation.x += 0.01
+            --cur_mesh.rotation.y += 0.01
             cur_mesh.rotation.z += 0.01
+            --cur_mesh.translation.y += 0.01
         end
 
         -- view matrix
@@ -154,11 +157,10 @@ function _update()
                 -- world matrix
                 world_matrix = mat_identity() 
                 world_matrix = mat4_mul_mat4(scale_matrix, world_matrix)
-                world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
-                world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
+                --world_matrix = mat4_mul_mat4(rot_matrix_x, world_matrix)
+                --world_matrix = mat4_mul_mat4(rot_matrix_y, world_matrix)
                 world_matrix = mat4_mul_mat4(rot_matrix_z, world_matrix)
                 world_matrix = mat4_mul_mat4(translation_matrix, world_matrix)
-
                 -- multiple world matrix by the original vector
                 transformed_vertex = mat4_mul_vec(world_matrix, transformed_vertex)
 
